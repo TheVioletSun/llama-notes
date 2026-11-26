@@ -29,11 +29,11 @@ cmake --build build --config Release
 
 4. Load the model with command (url in the output can be used for direct chat with the model) - optimized for 16GB VRAM:
 ```
-# Better quantization, cpu expert offloading (less errors, slower)
-./llama serve -m ~/llm_models/Qwen3.6-35B-A3B-MXFP4_MOE.gguf --mmproj ~/llm_models/mmproj-F16.gguf --no-mmproj-offload --ctx-size 131072 --n-gpu-layers 99 --n-cpu-moe 20 --flash-attn 1 --cache-type-k q8_0 --cache-type-v q8_0 --batch-size 2048 --ubatch-size 512 --reasoning off --reasoning-budget 0 --jinja --temp 0.7 --top-p 0.8 --top-k 21 --min-p 0.0 --presence-penalty 1.5 --repeat-penalty 1.0 --parallel 1 --load-mode none --host 0.0.0.0
+# Dense model, slower, eats more power (27B active params). Reasoning on (for complex tasks).
+./llama serve -m ~/llm_models/Qwen3.6-27B-UD-IQ3_XXS.gguf --mmproj ~/llm_models/Qwen3.6-27B-mmproj-F16.gguf --no-mmproj-offload --ctx-size 98304 --n-gpu-layers 999 --flash-attn 1 --cache-type-k q8_0 --cache-type-v q8_0 --batch-size 2048 --ubatch-size 512 --jinja --temp 0.6 --top-p 0.95 --top-k 20 --min-p 0.0 --presence-penalty 1.0 --repeat-penalty 1.0 --parallel 1 --host 0.0.0.0
 
-# Worse quantization, no cpu expert offloading (everyting in VRAM), faster.
-./llama serve -m ~/llm_models/Qwen3.6-35B-A3B-UD-IQ3_XXS.gguf --mmproj ~/llm_models/mmproj-F16.gguf --no-mmproj-offload --ctx-size 131072 --n-gpu-layers 99 --flash-attn 1 --cache-type-k q8_0 --cache-type-v q8_0 --batch-size 2048 --ubatch-size 512 --reasoning off --reasoning-budget 0 --jinja --temp 0.6 --top-p 0.8 --top-k 21 --min-p 0.0 --presence-penalty 1.5 --repeat-penalty 1.0 --parallel 1 --load-mode mmap+mlock --host 0.0.0.0
+# MOE, faster (x3) and cheaper. Logic can be less reliable for coding. Eats less power per token (3B active params + routing between experts). Reasoning off (for fast tasks).
+./llama serve -m ~/llm_models/Qwen3.6-35B-A3B-UD-IQ3_XXS.gguf --mmproj ~/llm_models/Qwen3.6-35B-A3B-mmproj-F16.gguf --no-mmproj-offload --ctx-size 131072 --n-gpu-layers 99 --flash-attn 1 --cache-type-k q8_0 --cache-type-v q8_0 --batch-size 2048 --ubatch-size 512 --reasoning off --reasoning-budget 0 --jinja --temp 0.6 --top-p 0.8 --top-k 21 --min-p 0.0 --presence-penalty 1.5 --repeat-penalty 1.0 --parallel 1 --load-mode mmap --host 0.0.0.0
 
 serve - launch llama.cpp server with OpenAI API
 -m - path to the model GGUF
