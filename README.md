@@ -27,9 +27,13 @@ cmake --build build --config Release
 --config - Release to exclude debugging stuff.
 ```
 
-4. Load the model with command (url in the output can be used for direct chat with the model):
+4. Load the model with command (url in the output can be used for direct chat with the model) - optimized for 16GB VRAM:
 ```
-./llama serve -m ~/llm_models/Qwen3.6-35B-A3B-MXFP4_MOE.gguf --mmproj ~/llm_models/mmproj-F16.gguf --no-mmproj-offload --ctx-size 65536 --n-gpu-layers 99 --n-cpu-moe 22 --flash-attn 1 --cache-type-k q8_0 --cache-type-v q8_0 --batch-size 2048 --ubatch-size 512 --reasoning off --reasoning-budget 0 --jinja --temp 0.7 --top-p 0.8 --top-k 21 --min-p 0.0 --presence-penalty 1.5 --repeat-penalty 1.0 --parallel 2 --load-mode mmap+mlock --host 0.0.0.0
+# Better quantization, cpu expert offloading (less errors, slower)
+./llama serve -m ~/llm_models/Qwen3.6-35B-A3B-MXFP4_MOE.gguf --mmproj ~/llm_models/mmproj-F16.gguf --no-mmproj-offload --ctx-size 131072 --n-gpu-layers 99 --n-cpu-moe 20 --flash-attn 1 --cache-type-k q8_0 --cache-type-v q8_0 --batch-size 2048 --ubatch-size 512 --reasoning off --reasoning-budget 0 --jinja --temp 0.7 --top-p 0.8 --top-k 21 --min-p 0.0 --presence-penalty 1.5 --repeat-penalty 1.0 --parallel 1 --load-mode mmap+mlock --host 0.0.0.0
+
+# Worse quantization, no cpu expert offloading (everyting in VRAM), faster.
+./llama serve -m ~/llm_models/Qwen3.6-35B-A3B-MXFP4_MOE.gguf --mmproj ~/llm_models/mmproj-F16.gguf --no-mmproj-offload --ctx-size 131072 --n-gpu-layers 99 --flash-attn 1 --cache-type-k q8_0 --cache-type-v q8_0 --batch-size 2048 --ubatch-size 512 --reasoning off --reasoning-budget 0 --jinja --temp 0.6 --top-p 0.8 --top-k 21 --min-p 0.0 --presence-penalty 1.5 --repeat-penalty 1.0 --parallel 1 --load-mode mmap+mlock --host 0.0.0.0
 
 serve - launch llama.cpp server with OpenAI API
 -m - path to the model GGUF
