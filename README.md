@@ -28,10 +28,15 @@ cmake --build build --config Release
 ```
 
 4. Load the model with command (url in the output can be used for direct chat with the model) - optimized for 16GB VRAM:
+Common sets of params for different tasks (model independent):
+* problem solving: --temp 0.3 --min-p 0.05 --top-p 0.9 --repeat-penalty 1.05 --top-k 40
+* architecture: --temp 0.6 --min-p 0.1 --top-p 0.95
+* implementation: --temp 0.1 --min-p 0.02 --top-p 1.0
+* chat/writing: --temp 0.8 --min-p 0.05 --top-p 0.95 --repeat-penalty 1.1
 ```
 # Gemma 4 26B A4B. MOE.
 ## With expert offload, good quant - 50 t/s (40 for thinking mode)
-./llama serve -m ~/llm_models/gemma-4-26B-A4B-it-UD-IQ4_XS.gguf --mmproj ~/llm_models/gemma-4-26B-A4B-it-mmproj-F16.gguf --ctx-size 98304 --n-gpu-layers 999 --n-cpu-moe 5 --flash-attn 1 --cache-type-k q8_0 --cache-type-v q8_0 --batch-size 512 --ubatch-size 512 --reasoning on --jinja --temp 0.6 --top-p 0.8 --top-k 20 --min-p 0.0 --presence-penalty 0.0 --repeat-penalty 1.0 --load-mode none --host 0.0.0.0
+./llama serve -m ~/llm_models/gemma-4-26B-A4B-it-UD-IQ4_XS.gguf --mmproj ~/llm_models/gemma-4-26B-A4B-it-mmproj-F16.gguf --ctx-size 98304 --n-gpu-layers 999 --n-cpu-moe 5 --flash-attn 1 --cache-type-k q8_0 --cache-type-v q8_0 --batch-size 512 --ubatch-size 512 --reasoning on --jinja --temp 0.3 --top-p 0.9 --top-k 40 --min-p 0.05 --presence-penalty 0.0 --repeat-penalty 1.05 --load-mode none --host 0.0.0.0
 ## Without expert offload, forced quant - 70 t/s (40 for thinking mode)
 ./llama serve -m ~/llm_models/gemma-4-26B-A4B-it-UD-IQ3_XXS.gguf --mmproj ~/llm_models/gemma-4-26B-A4B-it-mmproj-F16.gguf --ctx-size 98304 --n-gpu-layers 999 --flash-attn 1 --cache-type-k q8_0 --cache-type-v q8_0 --batch-size 512 --ubatch-size 512 --reasoning on --jinja --temp 0.6 --top-p 0.8 --top-k 20 --min-p 0.0 --presence-penalty 0.0 --repeat-penalty 1.0 --load-mode none --host 0.0.0.0
 
