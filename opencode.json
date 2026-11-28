@@ -4,7 +4,15 @@
   "modalities": [
     "text",
     "image"
-  ], 
+  ],
+  "compaction": {
+    "auto": true,
+    "prune": true,
+    "buffer": "20%",
+    "keep": {
+      "tokens": 16000
+    }
+  },
   "providers": {
     "llamacpp": {
       "name": "llama.cpp",
@@ -21,8 +29,8 @@
             "output": ["text"]
           },
           "limit": {
-            "context": 131072,
-            "output": 8192
+            "context": 98304,
+            "output": 16384
           }
         }
       }

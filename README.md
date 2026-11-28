@@ -37,7 +37,7 @@ Parameters --presence-penalty 0.0 --repeat-penalty 1.0 --frequency-penalty 0.0 -
 ```
 # Gemma 4 26B A4B. MOE.
 ## With expert offload, good quant - 50 t/s (40 for thinking mode)
-./llama serve -m ~/llm_models/gemma-4-26B-A4B-it-UD-IQ4_XS.gguf --mmproj ~/llm_models/gemma-4-26B-A4B-it-mmproj-F16.gguf --ctx-size 98304 --n-gpu-layers 999 --n-cpu-moe 5 --flash-attn 1 --cache-type-k q8_0 --cache-type-v q8_0 --batch-size 512 --ubatch-size 512 --reasoning on --jinja --temp 0.3 --top-p 0.9 --top-k 40 --min-p 0.05 --presence-penalty 0.0 --repeat-penalty 1.0 --load-mode none --host 0.0.0.0
+./llama serve -m ~/llm_models/gemma-4-26B-A4B-it-UD-IQ4_XS.gguf --mmproj ~/llm_models/gemma-4-26B-A4B-it-mmproj-F16.gguf --ctx-size 98304 --n-gpu-layers 999 --n-cpu-moe 5 --flash-attn 1 --cache-type-k q8_0 --cache-type-v q8_0 --batch-size 512 --ubatch-size 512 --reasoning on --reasoning-budget 8192 --jinja --temp 0.3 --top-p 0.9 --top-k 40 --min-p 0.05 --presence-penalty 0.0 --repeat-penalty 1.0 --load-mode none --host 0.0.0.0
 ## Without expert offload, forced quant - 70 t/s (50 for thinking mode)
 ./llama serve -m ~/llm_models/gemma-4-26B-A4B-it-UD-IQ3_XXS.gguf --mmproj ~/llm_models/gemma-4-26B-A4B-it-mmproj-F16.gguf --ctx-size 98304 --n-gpu-layers 999 --flash-attn 1 --cache-type-k q8_0 --cache-type-v q8_0 --batch-size 512 --ubatch-size 512 --reasoning on --jinja --temp 0.6 --top-p 0.8 --top-k 20 --min-p 0.0 --presence-penalty 0.0 --repeat-penalty 1.0 --load-mode none --host 0.0.0.0
 
