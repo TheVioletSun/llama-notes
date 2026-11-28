@@ -42,13 +42,13 @@ Parameters --presence-penalty 0.0 --repeat-penalty 1.0 --frequency-penalty 0.0 -
 ./llama serve -m ~/llm_models/gemma-4-26B-A4B-it-UD-IQ3_XXS.gguf --mmproj ~/llm_models/gemma-4-26B-A4B-it-mmproj-F16.gguf --ctx-size 98304 --n-gpu-layers 999 --flash-attn 1 --cache-type-k q8_0 --cache-type-v q8_0 --batch-size 512 --ubatch-size 512 --reasoning on --jinja --temp 0.6 --top-p 0.8 --top-k 20 --min-p 0.0 --presence-penalty 0.0 --repeat-penalty 1.0 --load-mode none --host 0.0.0.0
 
 # Qwen 3.6 35B A3B. MOE
-## Without expert offload to CPU and without reasoning - 70 t/s (for fast tasks - no reasoning, forced quant)
-./llama serve -m ~/llm_models/Qwen3.6-35B-A3B-UD-IQ3_XXS.gguf --mmproj ~/llm_models/Qwen3.6-35B-A3B-mmproj-F16.gguf --no-mmproj-offload --ctx-size 131072 --n-gpu-layers 99 --flash-attn 1 --cache-type-k q8_0 --cache-type-v q8_0 --batch-size 2048 --ubatch-size 512 --reasoning off --reasoning-budget 0 --jinja --temp 0.6 --top-p 0.8 --top-k 21 --min-p 0.0 --presence-penalty 0.0 --repeat-penalty 1.0 --parallel 1 --load-mode mmap --host 0.0.0.0
 ## With expert offload, good quant - 40 t/s (35 for thinking mode)
+### Thinking mode
+./llama serve -m ~/llm_models/Qwen3.6-35B-A3B-UD-IQ4_XS.gguf --mmproj ~/llm_models/Qwen3.6-35B-A3B-mmproj-F16.gguf --no-mmproj-offload --ctx-size 98304 --n-gpu-layers 99 --n-cpu-moe 12 --flash-attn 1 --cache-type-k q8_0 --cache-type-v q8_0 --batch-size 2048 --ubatch-size 512 --reasoning on --reasoning-budget 8192 --jinja --temp 0.3 --top-p 0.9 --top-k 40 --min-p 0.05 --presence-penalty 0.0 --repeat-penalty 1.0 --parallel 1 --load-mode none --host 0.0.0.0
 ### No thinking mode
 ./llama serve -m ~/llm_models/Qwen3.6-35B-A3B-UD-IQ4_XS.gguf --mmproj ~/llm_models/Qwen3.6-35B-A3B-mmproj-F16.gguf --no-mmproj-offload --ctx-size 98304 --n-gpu-layers 99 --n-cpu-moe 12 --flash-attn 1 --cache-type-k q8_0 --cache-type-v q8_0 --batch-size 2048 --ubatch-size 512 --reasoning off --reasoning-budget 0 --jinja --temp 0.3 --top-p 0.9 --top-k 40 --min-p 0.05 --presence-penalty 0.0 --repeat-penalty 1.0 --parallel 1 --load-mode none --host 0.0.0.0
-### Thinking mode
-./llama serve -m ~/llm_models/Qwen3.6-35B-A3B-UD-IQ4_XS.gguf --mmproj ~/llm_models/Qwen3.6-35B-A3B-mmproj-F16.gguf --no-mmproj-offload --ctx-size 98304 --n-gpu-layers 99 --n-cpu-moe 12 --flash-attn 1 --cache-type-k q8_0 --cache-type-v q8_0 --batch-size 2048 --ubatch-size 512 --reasoning on --jinja --temp 0.3 --top-p 0.9 --top-k 40 --min-p 0.05 --presence-penalty 0.0 --repeat-penalty 1.0 --parallel 1 --load-mode none --host 0.0.0.0
+## Without expert offload to CPU and without reasoning - 70 t/s (for fast tasks - no reasoning, forced quant)
+./llama serve -m ~/llm_models/Qwen3.6-35B-A3B-UD-IQ3_XXS.gguf --mmproj ~/llm_models/Qwen3.6-35B-A3B-mmproj-F16.gguf --no-mmproj-offload --ctx-size 131072 --n-gpu-layers 99 --flash-attn 1 --cache-type-k q8_0 --cache-type-v q8_0 --batch-size 2048 --ubatch-size 512 --reasoning off --reasoning-budget 0 --jinja --temp 0.6 --top-p 0.8 --top-k 21 --min-p 0.0 --presence-penalty 0.0 --repeat-penalty 1.0 --parallel 1 --load-mode mmap --host 0.0.0.0
 
 # Qwen 3.8 27B. Dense model.
 ## Quite slow (27B active params). Reasoning on (for complex tasks). Forced quant makes reasoning not relible (not recommended option).
